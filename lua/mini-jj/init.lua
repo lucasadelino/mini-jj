@@ -25,7 +25,7 @@ MiniJJ.setup = function(config)
   -- Apply config
   H.apply_config(config)
 
-  -- Ensure proper Git executable
+  -- Ensure proper JJ executable
   local exec = config.job.jj_executable
   H.has_git = vim.fn.executable(exec) == 1
   if not H.has_git then H.notify('There is no `' .. exec .. '` executable', 'WARN') end
@@ -44,7 +44,7 @@ end
 ---
 --- `config.job` contains options for customizing CLI executions.
 ---
---- `job.jj_executable` defines a full path to Git executable. Default: "jj".
+--- `job.jj_executable` defines a full path to JJ executable. Default: "jj".
 ---
 --- `job.timeout` is a duration (in ms) from job start until it is forced to stop.
 --- Default: 30000.
@@ -60,7 +60,7 @@ end
 MiniJJ.config = {
   -- General CLI execution
   job = {
-    -- Path to Git executable
+    -- Path to JJ executable
     jj_executable = 'jj',
 
     -- Timeout (in ms) for each job before force quit
@@ -70,7 +70,7 @@ MiniJJ.config = {
 }
 --minidoc_afterlines_end
 
---- Enable Git tracking in a file buffer
+--- Enable JJ tracking in a file buffer
 ---
 --- Tracking is done by reacting to changes in file content or file's repository
 --- in the form of keeping buffer data up to date. The data can be used via:
@@ -95,7 +95,7 @@ MiniJJ.enable = function(buf_id)
   -- Don't enable more than once
   if H.is_buf_enabled(buf_id) or H.is_disabled(buf_id) or not H.has_git then return end
 
-  -- Enable only in buffers which *can* be part of Git repo
+  -- Enable only in buffers which *can* be part of JJ repo
   local path = H.get_buf_realpath(buf_id)
   if path == '' or vim.fn.filereadable(path) ~= 1 then return end
 
@@ -105,7 +105,7 @@ MiniJJ.enable = function(buf_id)
   H.start_tracking(buf_id, path)
 end
 
---- Disable Git tracking in buffer
+--- Disable JJ tracking in buffer
 ---
 ---@param buf_id __git_buf_id
 MiniJJ.disable = function(buf_id)
@@ -129,7 +129,7 @@ MiniJJ.disable = function(buf_id)
   end
 end
 
---- Toggle Git tracking in buffer
+--- Toggle JJ tracking in buffer
 ---
 --- Enable if disabled, disable if enabled.
 ---
@@ -144,8 +144,8 @@ end
 ---
 ---@param buf_id __git_buf_id
 ---
----@return table|nil Table with buffer Git data or `nil` if buffer is not enabled.
----   If the file is not part of Git repo, table will be empty.
+---@return table|nil Table with buffer JJ data or `nil` if buffer is not enabled.
+---   If the file is not part of JJ repo, table will be empty.
 ---   Table has the following fields:
 ---   - <repo> `(string)` - full path to '.git' directory.
 ---   - <root> `(string)` - full path to worktree root.
@@ -214,7 +214,7 @@ H.create_autocommands = function()
 
   -- NOTE: Try auto enabling buffer on every `BufEnter` to not have `:edit`
   -- disabling buffer, as it calls `on_detach()` from buffer watcher
-  au('BufEnter', '*', H.auto_enable, 'Enable Git tracking')
+  au('BufEnter', '*', H.auto_enable, 'Enable JJ tracking')
 end
 
 H.is_disabled = function(buf_id) return vim.g.minijj_disable == true or vim.b[buf_id or 0].minijj_disable == true end
@@ -283,7 +283,7 @@ end
 H.start_tracking = function(buf_id, path)
   local command = H.jj_cmd({ 'workspace', 'root' })
 
-  -- If path is not in Git, disable buffer but make sure that it will not try
+  -- If path is not in JJ, disable buffer but make sure that it will not try
   -- to re-attach until buffer is properly disabled
   local on_not_in_git = function()
     if H.is_buf_enabled(buf_id) then MiniJJ.disable(buf_id) end
@@ -302,7 +302,7 @@ H.start_tracking = function(buf_id, path)
     local repo = root .. '/.git'
     H.update_buf_data(buf_id, { repo = repo, root = root })
 
-    -- Set up repo watching to react to Git index changes
+    -- Set up repo watching to react to JJ changes
     H.setup_repo_watch(buf_id, repo)
 
     -- Immediately update buffer tracking data
@@ -368,7 +368,7 @@ H.on_repo_change = function(repo)
     end
   end
 
-  -- Update Git data
+  -- Update JJ data
   for root, bufs in pairs(root_bufs) do
     H.update_jj_change(root, bufs)
   end
