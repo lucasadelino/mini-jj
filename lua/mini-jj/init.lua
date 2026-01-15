@@ -327,13 +327,15 @@ H.setup_repo_watch = function(buf_id, repo)
       if vim.endswith(filename or '', 'lock') then return end
 
       -- Debounce to not overload during incremental staging (like in script)
-      timer:stop()
-      timer:start(50, 0, on_change)
+      if timer then
+        timer:stop()
+        timer:start(50, 0, on_change)
+      end
     end
     -- Watch only '.git' dir (non-recursively), as this seems to be both enough
     -- and not supported by libuv (`recursive` flag does nothing,
     -- see https://github.com/libuv/libuv/issues/1778)
-    fs_event:start(repo, {}, watch)
+    if fs_event then fs_event:start(repo, {}, watch) end
 
     repo_cache.fs_event, repo_cache.timer = fs_event, timer
     H.repos[repo] = repo_cache
