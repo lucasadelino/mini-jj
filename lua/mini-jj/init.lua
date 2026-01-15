@@ -298,7 +298,8 @@ H.start_tracking = function(buf_id, path)
     -- Update buf data
     local root = out
     if root == nil then return H.notify('No initial data for buffer ' .. buf_id, 'WARN') end
-    local repo = root .. '/.jj'
+    -- local repo = root .. '/.jj'
+    local repo = root .. '/.git'
     H.update_buf_data(buf_id, { repo = repo, root = root })
 
     -- Set up repo watching to react to Git index changes
