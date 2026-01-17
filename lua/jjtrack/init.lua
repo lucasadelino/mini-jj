@@ -86,7 +86,8 @@ JJTrack.config = {
 --- Note that not all data listed in |JJTrack.get_buf_data()| can be present (yet)
 --- at the point of event being triggered.
 ---
----@param buf_id __git_buf_id
+---@alias __jj_buf_id number Target buffer identifier. Default: 0 for current buffer.
+---@param buf_id __jj_buf_id
 JJTrack.enable = function(buf_id)
   buf_id = H.validate_buf_id(buf_id)
 
@@ -105,7 +106,7 @@ end
 
 --- Disable JJ tracking in buffer
 ---
----@param buf_id __git_buf_id
+---@param buf_id __jj_buf_id
 JJTrack.disable = function(buf_id)
   buf_id = H.validate_buf_id(buf_id)
 
@@ -131,7 +132,7 @@ end
 ---
 --- Enable if disabled, disable if enabled.
 ---
----@param buf_id __git_buf_id
+---@param buf_id __jj_buf_id
 JJTrack.toggle = function(buf_id)
   buf_id = H.validate_buf_id(buf_id)
   if H.is_buf_enabled(buf_id) then return JJTrack.disable(buf_id) end
@@ -140,7 +141,7 @@ end
 
 --- Get buffer data
 ---
----@param buf_id __git_buf_id
+---@param buf_id __jj_buf_id
 ---
 ---@return table|nil Table with buffer JJ data or `nil` if buffer is not enabled.
 ---   If the file is not part of JJ repo, table will be empty.
