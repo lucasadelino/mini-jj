@@ -4,7 +4,7 @@ local H = {}
 
 --- Module setup
 ---
---- - Sets up auto enabling in every normal buffer for an actual file on disk.
+--- Sets up auto enabling in every normal buffer for an actual file on disk.
 ---
 ---@param config table|nil Module config table. See |JJTrack.config|.
 ---
@@ -46,15 +46,6 @@ end
 ---
 --- `job.timeout` is a duration (in ms) from job start until it is forced to stop.
 --- Default: 30000.
----
---- # Command ~
----
---- `config.command` contains options for customizing |:Git| command.
----
---- `command.split` defines default split direction for |:Git| command output. Can be
---- one of "horizontal", "vertical", "tab", or "auto". Value "auto" uses |:vertical|
---- if only 'jjtrack' buffers are shown in the tabpage and |:tab| otherwise.
---- Default: "auto".
 JJTrack.config = {
   -- General CLI execution
   job = {
@@ -174,9 +165,8 @@ H.default_config = JJTrack.config
 -- - <augroup> - identifier of augroup defining buffer behavior.
 -- - <repo> - path to buffer's repo ('.git' directory).
 -- - <root> - path to worktree root.
--- - <change_prefix> - full commit of `HEAD`.
--- - <change_rest> - short name of `HEAD` (`'HEAD'` for detached head).
--- - <status> - current file status.
+-- - <change_prefix> - unique prefix of current JJ change_id
+-- - <change_rest> - rest of current JJ change_id (i.e., without unique prefix)
 H.cache = {}
 
 -- Cache per repo (git directory) path. Values are tables with fields:
