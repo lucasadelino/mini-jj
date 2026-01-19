@@ -380,7 +380,6 @@ H.update_jj_change = function(root, bufs)
     'log', '-r', '@', '--no-graph', '--ignore-working-copy',
     '--limit', '1', '--template',
     -- TODO: make the length configurable
-    -- TODO: str_to_bool function
     "separate(' ', change_id.shortest(8).prefix(), change_id.shortest(8).rest(), commit_id.shortest(8).prefix(), commit_id.shortest(8).rest(), conflict, divergent, empty, hidden, immutable, mine, root, bookmarks )"
   })
 
@@ -398,17 +397,21 @@ H.update_jj_change = function(root, bufs)
       table.insert(words, word)
     end
 
+    local function str_to_bool(str)
+      return str == 'true'
+    end
+
     local change_id_prefix = words[1]
     local change_id_rest = words[2]
     local commit_id_prefix = words[3]
     local commit_id_rest = words[4]
-    local conflict  = words[5]
-    local divergent  = words[6]
-    local empty  = words[7]
-    local hidden  = words[8]
-    local immutable  = words[9]
-    local mine  = words[10]
-    local root_commit = words[11]
+    local conflict  = str_to_bool(words[5])
+    local divergent  = str_to_bool(words[6])
+    local empty  = str_to_bool(words[7])
+    local hidden  = str_to_bool(words[8])
+    local immutable  = str_to_bool(words[9])
+    local mine  = str_to_bool(words[10])
+    local root_commit = str_to_bool(words[11])
     local bookmarks = words[12] ~= nil and vim.list_slice(words, 12) or {}
 
     -- Update data for all buffers from target `root`
