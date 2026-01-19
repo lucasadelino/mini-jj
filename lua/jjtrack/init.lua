@@ -139,11 +139,18 @@ end
 ---   Table has the following fields:
 ---   - <repo> `(string)` - full path to '.git' directory.
 ---   - <root> `(string)` - full path to worktree root.
----   - <head> `(string)` - full commit of current HEAD.
----   - <change_id_rest> `(string)` - short name of current HEAD (like "master").
----     For detached HEAD it is "HEAD".
----   - <status> `(string)` - two character file status as returned by `git status`.
----     (bisect, merge, etc.). Can be a combination of those separated by ",".
+---   - <change_id_prefix> `(string)` - unique prefix of the change_id
+---   - <change_id_rest> `(string)` - rest of the change_id (i.e., without prefix)
+---   - <commit_id_prefix> `(string)` - unique prefix of the commit_id
+---   - <commit_id_rest> `(string)` - rest of the commit_id (i.e., without prefix)
+---   - <conflict> `(boolean)` - whether this commit has a merge conflict
+---   - <divergent> `(boolean)` - whether this change_id corresponds to more than one commit
+---   - <empty> `(boolean)` - whether this commit has no changes
+---   - <hidden> `(boolean)` - whether this commit has been abandoned
+---   - <immutable> `(boolean)` - whether this commit is in the set of immutable commits
+---   - <mine> `(boolean)` - whether the author's email in this commit matches that of the current user
+---   - <root_commit> `(boolean)` - whether this commit is the root of the jj repo
+---   - <bookmarks> `(string[])` - the local and remote bookmarks for this commit
 JJTrack.get_buf_data = function(buf_id)
   buf_id = H.validate_buf_id(buf_id)
   local buf_cache = H.cache[buf_id]
@@ -174,8 +181,18 @@ H.default_config = JJTrack.config
 -- - <augroup> - identifier of augroup defining buffer behavior.
 -- - <repo> - path to buffer's repo ('.git' directory).
 -- - <root> - path to worktree root.
--- - <change_id_prefix> - unique prefix of current JJ change_id
--- - <change_id_rest> - rest of current JJ change_id (i.e., without unique prefix)
+-- - <change_id_prefix> `(string)` - unique prefix of the change_id
+-- - <change_id_rest> `(string)` - rest of the change_id (i.e., without prefix)
+-- - <commit_id_prefix> `(string)` - unique prefix of the commit_id
+-- - <commit_id_rest> `(string)` - rest of the commit_id (i.e., without prefix)
+-- - <conflict> `(boolean)` - whether this commit has a merge conflict
+-- - <divergent> `(boolean)` - whether this change_id corresponds to more than one commit
+-- - <empty> `(boolean)` - whether this commit has no changes
+-- - <hidden> `(boolean)` - whether this commit has been abandoned
+-- - <immutable> `(boolean)` - whether this commit is in the set of immutable commits
+-- - <mine> `(boolean)` - whether the author's email in this commit matches that of the current user
+-- - <root_commit> `(boolean)` - whether this commit is the root of the jj repo
+-- - <bookmarks> `(string[])` - the local and remote bookmarks for this commit
 H.cache = {}
 
 -- Cache per repo (git directory) path. Values are tables with fields:
