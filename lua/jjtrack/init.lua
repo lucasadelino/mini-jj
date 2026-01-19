@@ -398,10 +398,10 @@ H.update_jj_change = function(root, bufs)
       table.insert(words, word)
     end
 
-    local change_id_rest = words[2]
     local change_id_prefix = words[1]
-    local commit_id_rest = words[4]
+    local change_id_rest = words[2]
     local commit_id_prefix = words[3]
+    local commit_id_rest = words[4]
     local conflict  = words[5]
     local divergent  = words[6]
     local empty  = words[7]
