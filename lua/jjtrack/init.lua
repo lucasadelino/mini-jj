@@ -140,7 +140,7 @@ end
 ---   - <repo> `(string)` - full path to '.git' directory.
 ---   - <root> `(string)` - full path to worktree root.
 ---   - <head> `(string)` - full commit of current HEAD.
----   - <change_rest> `(string)` - short name of current HEAD (like "master").
+---   - <change_id_rest> `(string)` - short name of current HEAD (like "master").
 ---     For detached HEAD it is "HEAD".
 ---   - <status> `(string)` - two character file status as returned by `git status`.
 ---     (bisect, merge, etc.). Can be a combination of those separated by ",".
@@ -151,10 +151,10 @@ JJTrack.get_buf_data = function(buf_id)
   return {
     repo = buf_cache.repo,
     root = buf_cache.root,
-    change_prefix = buf_cache.change_prefix,
-    change_rest = buf_cache.change_rest,
-    commit_prefix = buf_cache.commit_prefix,
-    commit_rest = buf_cache.commit_rest,
+    change_id_prefix = buf_cache.change_id_prefix,
+    change_id_rest = buf_cache.change_id_rest,
+    commit_id_prefix = buf_cache.commit_id_prefix,
+    commit_id_rest = buf_cache.commit_id_rest,
     conflict = buf_cache.conflict,
     divergent = buf_cache.divergent,
     empty = buf_cache.empty,
@@ -174,8 +174,8 @@ H.default_config = JJTrack.config
 -- - <augroup> - identifier of augroup defining buffer behavior.
 -- - <repo> - path to buffer's repo ('.git' directory).
 -- - <root> - path to worktree root.
--- - <change_prefix> - unique prefix of current JJ change_id
--- - <change_rest> - rest of current JJ change_id (i.e., without unique prefix)
+-- - <change_id_prefix> - unique prefix of current JJ change_id
+-- - <change_id_rest> - rest of current JJ change_id (i.e., without unique prefix)
 H.cache = {}
 
 -- Cache per repo (git directory) path. Values are tables with fields:
@@ -398,10 +398,10 @@ H.update_jj_change = function(root, bufs)
       table.insert(words, word)
     end
 
-    local rest = words[2]
-    local unique_prefix = words[1]
-    local commit_rest = words[4]
-    local commit_prefix = words[3]
+    local change_id_rest = words[2]
+    local change_id_prefix = words[1]
+    local commit_id_rest = words[4]
+    local commit_id_prefix = words[3]
     local conflict  = words[5]
     local divergent  = words[6]
     local empty  = words[7]
@@ -413,10 +413,10 @@ H.update_jj_change = function(root, bufs)
 
     -- Update data for all buffers from target `root`
     local new_data = {
-      change_prefix = unique_prefix,
-      change_rest = rest,
-      commit_prefix = commit_prefix,
-      commit_rest = commit_rest,
+      change_id_prefix = change_id_prefix,
+      change_id_rest = change_id_rest,
+      commit_id_prefix = commit_id_prefix,
+      commit_id_rest = commit_id_rest,
       conflict = conflict,
       divergent = divergent,
       empty = empty,
@@ -448,10 +448,10 @@ H.update_buf_data = function(buf_id, new_data)
   vim.b[buf_id].jjtrack_summary = summary
 
   -- Format summary string
-  local change_prefix = summary.change_prefix or ''
-  local change_rest = summary.change_rest or ''
+  local change_id_prefix = summary.change_id_prefix or ''
+  local change_id_rest = summary.change_id_rest or ''
 
-  local summary_string = change_prefix .. change_rest
+  local summary_string = change_id_prefix .. change_id_rest
   vim.b[buf_id].jjtrack_summary_string = summary_string
 
   -- Trigger dedicated event with target current buffer (for proper `data.buf`)
